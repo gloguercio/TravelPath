@@ -73,31 +73,6 @@ def generate_next_states(current_state):
 
     return next_states
 
-def greedy_search(initial_state, max_iterations=user_number):
-    global moves_list
-    current_state = copy.deepcopy(initial_state)
-    iterations = 0  # Counter for iterations
-
-    while not is_goal_state(current_state) and iterations < max_iterations:
-        next_states = generate_next_states(current_state)
-
-        best_next_state = min(next_states, key=lambda x: x[2])
-        elem1 = best_next_state[0]
-        elem2 = best_next_state[1]
-        current_state[elem1]["current_location"], current_state[elem2]["current_location"] = current_state[elem2]["current_location"], current_state[elem1]["current_location"]
-        current_state[elem1]["current_shelf_priority"], current_state[elem2]["current_shelf_priority"] = current_state[elem2]["current_shelf_priority"], current_state[elem1]["current_shelf_priority"]
-        iterations += 1
-        new_row = pd.DataFrame({
-            "Move Number": [iterations],
-            "First Item": [current_state[elem1]["id"]],
-            "Location of First Item": [current_state[elem1]["current_location"]],
-            "Second Item": [current_state[elem2]["id"]],
-            "Location of Second Item": [current_state[elem2]["current_location"]]
-        })
-        moves_list = pd.concat([moves_list, new_row], ignore_index=True)
-
-    return current_state
-
 
 def main():
     # Title of the app
@@ -117,6 +92,31 @@ def main():
         df = pd.read_csv(uploaded_file)
         st.write("Uploaded CSV file preview:")
         st.write(df)
+
+        def greedy_search(initial_state, max_iterations=user_number):
+            global moves_list
+            current_state = copy.deepcopy(initial_state)
+            iterations = 0  # Counter for iterations
+
+            while not is_goal_state(current_state) and iterations < max_iterations:
+                next_states = generate_next_states(current_state)
+
+                best_next_state = min(next_states, key=lambda x: x[2])
+                elem1 = best_next_state[0]
+                elem2 = best_next_state[1]
+                current_state[elem1]["current_location"], current_state[elem2]["current_location"] = current_state[elem2]["current_location"], current_state[elem1]["current_location"]
+                current_state[elem1]["current_shelf_priority"], current_state[elem2]["current_shelf_priority"] = current_state[elem2]["current_shelf_priority"], current_state[elem1]["current_shelf_priority"]
+                iterations += 1
+                new_row = pd.DataFrame({
+                    "Move Number": [iterations],
+                    "First Item": [current_state[elem1]["id"]],
+                    "Location of First Item": [current_state[elem1]["current_location"]],
+                    "Second Item": [current_state[elem2]["id"]],
+                    "Location of Second Item": [current_state[elem2]["current_location"]]
+                })
+                moves_list = pd.concat([moves_list, new_row], ignore_index=True)
+
+            return current_state
 
         df = df.rename(columns={
             'ItemID': 'id',
