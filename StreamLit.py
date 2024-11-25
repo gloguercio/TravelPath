@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import io
+import copy
 
 # Create an empty DataFrame
 moves_list = pd.DataFrame(columns=[
