@@ -155,3 +155,7 @@ final_state = greedy_search(initial_state, max_iterations=300)
 moves_list.head()
 
 moves_list.to_csv('ABCresults.csv', index=False, header=True)
+
+st.title("ABC Bearings Optimization")
+   if st.button("Run Greedy Search"):
+       run_greedy_search()
